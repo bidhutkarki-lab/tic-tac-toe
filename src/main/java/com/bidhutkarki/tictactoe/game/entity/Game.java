@@ -71,4 +71,9 @@ public class Game {
     public Instant getCreatedAt() {
         return createdAt;
     }
+
+    public void update(String board, GameStatus status) {
+        this.board = board;
+        this.status = status;
+    }
 }

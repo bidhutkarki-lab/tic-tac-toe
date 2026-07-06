@@ -2,6 +2,7 @@ package com.bidhutkarki.tictactoe.game.service;
 
 import com.bidhutkarki.tictactoe.game.dto.CreateGameRequest;
 import com.bidhutkarki.tictactoe.game.dto.GameResponse;
+import com.bidhutkarki.tictactoe.game.dto.UpdateGameRequest;
 import com.bidhutkarki.tictactoe.game.entity.Game;
 import com.bidhutkarki.tictactoe.game.exception.GameNotFoundException;
 import com.bidhutkarki.tictactoe.game.repository.GameRepository;
@@ -36,5 +37,21 @@ public class GameService {
         Game game = gameRepository.findById(id)
                 .orElseThrow(() -> new GameNotFoundException(id));
         return GameResponse.from(game);
+    }
+
+    @Transactional
+    public GameResponse update(Long id, UpdateGameRequest request) {
+        Game game = gameRepository.findById(id)
+                .orElseThrow(() -> new GameNotFoundException(id));
+        game.update(request.board(), request.status());
+        return GameResponse.from(game);
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        if (!gameRepository.existsById(id)) {
+            throw new GameNotFoundException(id);
+        }
+        gameRepository.deleteById(id);
     }
 }
