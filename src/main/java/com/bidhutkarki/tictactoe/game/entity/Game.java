@@ -14,8 +14,6 @@ import java.time.Instant;
 @Table(name = "games")
 public class Game {
 
-    private static final String EMPTY_BOARD = "---------";
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -43,7 +41,7 @@ public class Game {
     public Game(Long playerXId, Long playerOId) {
         this.playerXId = playerXId;
         this.playerOId = playerOId;
-        this.board = EMPTY_BOARD;
+        this.board = Board.EMPTY;
         this.status = GameStatus.IN_PROGRESS;
         this.createdAt = Instant.now();
     }
@@ -72,8 +70,8 @@ public class Game {
         return createdAt;
     }
 
-    public void update(String board, GameStatus status) {
+    public void update(String board) {
         this.board = board;
-        this.status = status;
+        this.status = new Board(board).status();
     }
 }

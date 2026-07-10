@@ -43,7 +43,7 @@ public class GameService {
     public GameResponse update(Long id, UpdateGameRequest request) {
         Game game = gameRepository.findById(id)
                 .orElseThrow(() -> new GameNotFoundException(id));
-        game.update(request.board(), request.status());
+        game.update(request.board());
         return GameResponse.from(game);
     }
 
