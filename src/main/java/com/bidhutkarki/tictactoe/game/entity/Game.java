@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import java.time.Instant;
 
 @Entity
@@ -33,6 +34,9 @@ public class Game {
 
     @Column(nullable = false, updatable = false)
     private Instant createdAt;
+
+    @Version
+    private Long version;
 
     protected Game() {
         // for JPA

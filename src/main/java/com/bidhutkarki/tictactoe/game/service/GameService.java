@@ -2,9 +2,13 @@ package com.bidhutkarki.tictactoe.game.service;
 
 import com.bidhutkarki.tictactoe.game.dto.CreateGameRequest;
 import com.bidhutkarki.tictactoe.game.dto.GameResponse;
+import com.bidhutkarki.tictactoe.game.dto.MakeMoveRequest;
 import com.bidhutkarki.tictactoe.game.dto.UpdateGameRequest;
+import com.bidhutkarki.tictactoe.game.entity.Board;
 import com.bidhutkarki.tictactoe.game.entity.Game;
+import com.bidhutkarki.tictactoe.game.entity.GameStatus;
 import com.bidhutkarki.tictactoe.game.exception.GameNotFoundException;
+import com.bidhutkarki.tictactoe.game.exception.InvalidMoveException;
 import com.bidhutkarki.tictactoe.game.repository.GameRepository;
 import java.util.List;
 import org.springframework.stereotype.Service;
@@ -45,6 +49,36 @@ public class GameService {
                 .orElseThrow(() -> new GameNotFoundException(id));
         game.update(request.board());
         return GameResponse.from(game);
+    }
+
+    @Transactional
+    public GameResponse makeMove(Long id, MakeMoveRequest request) {
+        Game game = gameRepository.findById(id)
+                .orElseThrow(() -> new GameNotFoundException(id));
+        if (game.getStatus() != GameStatus.IN_PROGRESS) {
+            throw new InvalidMoveException("game '" + id + "' is already finished");
+        }
+        char mark = markFor(game, request.playerId());
+        Board board = new Board(game.getBoard());
+        if (board.nextMark() != mark) {
+            throw new InvalidMoveException("it is not player '" + request.playerId() + "'s turn");
+        }
+        if (!board.isEmptyAt(request.cell())) {
+            throw new InvalidMoveException("cell " + request.cell() + " is already taken");
+        }
+        game.update(board.withMark(request.cell(), mark));
+        return GameResponse.from(game);
+    }
+
+    private char markFor(Game game, Long playerId) {
+        if (playerId.equals(game.getPlayerXId())) {
+            return Board.MARK_X;
+        }
+        if (playerId.equals(game.getPlayerOId())) {
+            return Board.MARK_O;
+        }
+        throw new InvalidMoveException(
+                "player '" + playerId + "' is not part of game '" + game.getId() + "'");
     }
 
     @Transactional

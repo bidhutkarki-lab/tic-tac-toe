@@ -2,6 +2,7 @@ package com.bidhutkarki.tictactoe.game.controller;
 
 import com.bidhutkarki.tictactoe.game.dto.CreateGameRequest;
 import com.bidhutkarki.tictactoe.game.dto.GameResponse;
+import com.bidhutkarki.tictactoe.game.dto.MakeMoveRequest;
 import com.bidhutkarki.tictactoe.game.dto.UpdateGameRequest;
 import com.bidhutkarki.tictactoe.game.service.GameService;
 import jakarta.validation.Valid;
@@ -48,6 +49,11 @@ public class GameController {
     @PutMapping("/{id}")
     public GameResponse updateGame(@PathVariable Long id, @Valid @RequestBody UpdateGameRequest request) {
         return gameService.update(id, request);
+    }
+
+    @PostMapping("/{id}/moves")
+    public GameResponse makeMove(@PathVariable Long id, @Valid @RequestBody MakeMoveRequest request) {
+        return gameService.makeMove(id, request);
     }
 
     @DeleteMapping("/{id}")
