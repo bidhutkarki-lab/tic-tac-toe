@@ -23,7 +23,7 @@ public class UserService {
         UserResponse user = authClient.register(AuthRegisterRequest.from(request));
         Profile profile = profileRepository.save(new Profile(
                 user.id(),
-                user.username(),
+                request.username().trim(),
                 request.firstName().trim(),
                 request.lastName().trim()));
         return ProfileResponse.from(profile);
