@@ -6,6 +6,7 @@ import com.bidhutkarki.tictactoe.user.exception.AuthServiceException;
 import com.bidhutkarki.tictactoe.user.exception.AuthServiceUnavailableException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
@@ -15,15 +16,13 @@ import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClient;
 
 @Component
+@RequiredArgsConstructor
 public class AuthClient {
 
     private static final String REGISTER_PATH = "/api/auth/register";
 
+    @Qualifier("authServiceRestClient")
     private final RestClient restClient;
-
-    public AuthClient(@Qualifier("authServiceRestClient") RestClient restClient) {
-        this.restClient = restClient;
-    }
 
     public UserResponse register(AuthRegisterRequest request) {
         try {

@@ -8,9 +8,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import java.time.Instant;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "profiles")
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Profile {
 
     @Id
@@ -35,10 +40,6 @@ public class Profile {
     @Column(nullable = false)
     private Instant updatedAt;
 
-    protected Profile() {
-        // for JPA
-    }
-
     public Profile(Long authId, String username, String firstName, String lastName) {
         this.authId = authId;
         this.username = username;
@@ -52,33 +53,5 @@ public class Profile {
     @PreUpdate
     void onUpdate() {
         this.updatedAt = Instant.now();
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public Long getAuthId() {
-        return authId;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
-
-    public Instant getUpdatedAt() {
-        return updatedAt;
     }
 }

@@ -6,17 +6,15 @@ import com.bidhutkarki.tictactoe.player.entity.Player;
 import com.bidhutkarki.tictactoe.player.exception.UsernameAlreadyExistsException;
 import com.bidhutkarki.tictactoe.player.repository.PlayerRepository;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@RequiredArgsConstructor
 public class PlayerService {
 
     private final PlayerRepository playerRepository;
-
-    public PlayerService(PlayerRepository playerRepository) {
-        this.playerRepository = playerRepository;
-    }
 
     @Transactional
     public PlayerResponse register(RegisterPlayerRequest request) {

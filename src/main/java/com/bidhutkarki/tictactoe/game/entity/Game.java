@@ -10,9 +10,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
 import java.time.Instant;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "games")
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Game {
 
     @Id
@@ -38,40 +43,12 @@ public class Game {
     @Version
     private Long version;
 
-    protected Game() {
-        // for JPA
-    }
-
     public Game(Long playerXId, Long playerOId) {
         this.playerXId = playerXId;
         this.playerOId = playerOId;
         this.board = Board.EMPTY;
         this.status = GameStatus.IN_PROGRESS;
         this.createdAt = Instant.now();
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public Long getPlayerXId() {
-        return playerXId;
-    }
-
-    public Long getPlayerOId() {
-        return playerOId;
-    }
-
-    public String getBoard() {
-        return board;
-    }
-
-    public GameStatus getStatus() {
-        return status;
-    }
-
-    public Instant getCreatedAt() {
-        return createdAt;
     }
 
     public void update(String board) {

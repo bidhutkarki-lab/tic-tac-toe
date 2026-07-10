@@ -11,17 +11,15 @@ import com.bidhutkarki.tictactoe.game.exception.GameNotFoundException;
 import com.bidhutkarki.tictactoe.game.exception.InvalidMoveException;
 import com.bidhutkarki.tictactoe.game.repository.GameRepository;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@RequiredArgsConstructor
 public class GameService {
 
     private final GameRepository gameRepository;
-
-    public GameService(GameRepository gameRepository) {
-        this.gameRepository = gameRepository;
-    }
 
     @Transactional
     public GameResponse create(CreateGameRequest request) {

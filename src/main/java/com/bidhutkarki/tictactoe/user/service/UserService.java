@@ -7,19 +7,16 @@ import com.bidhutkarki.tictactoe.user.dto.RegisterRequest;
 import com.bidhutkarki.tictactoe.user.dto.UserResponse;
 import com.bidhutkarki.tictactoe.user.entity.Profile;
 import com.bidhutkarki.tictactoe.user.repository.ProfileRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
     private final AuthClient authClient;
     private final ProfileRepository profileRepository;
-
-    public UserService(AuthClient authClient, ProfileRepository profileRepository) {
-        this.authClient = authClient;
-        this.profileRepository = profileRepository;
-    }
 
     @Transactional
     public ProfileResponse register(RegisterRequest request) {
