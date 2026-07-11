@@ -1,9 +1,8 @@
 package com.bidhutkarki.tictactoe.user.entity;
 
+import com.bidhutkarki.tictactoe.common.UuidGenerator;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
@@ -19,11 +18,11 @@ import lombok.NoArgsConstructor;
 public class Profile {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(length = 32, updatable = false)
+    private String id;
 
-    @Column(nullable = false, unique = true, updatable = false)
-    private Long authId;
+    @Column(length = 32, nullable = false, unique = true, updatable = false)
+    private String authId;
 
     @Column(nullable = false)
     private String username;
@@ -40,7 +39,8 @@ public class Profile {
     @Column(nullable = false)
     private Instant updatedAt;
 
-    public Profile(Long authId, String username, String firstName, String lastName) {
+    public Profile(String authId, String username, String firstName, String lastName) {
+        this.id = UuidGenerator.newId();
         this.authId = authId;
         this.username = username;
         this.firstName = firstName;

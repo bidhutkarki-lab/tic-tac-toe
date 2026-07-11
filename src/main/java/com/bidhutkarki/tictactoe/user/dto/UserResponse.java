@@ -4,7 +4,7 @@ import java.time.Instant;
 import java.util.Set;
 
 public record UserResponse(
-        Long id,
+        String id,
         String email,
         Set<String> roles,
         Instant createdAt) {

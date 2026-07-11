@@ -4,9 +4,9 @@ import com.bidhutkarki.tictactoe.user.entity.Profile;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ProfileRepository extends JpaRepository<Profile, Long> {
+public interface ProfileRepository extends JpaRepository<Profile, String> {
 
-    Optional<Profile> findByAuthId(Long authId);
+    Optional<Profile> findByAuthId(String authId);
 
-    boolean existsByAuthId(Long authId);
+    boolean existsByAuthId(String authId);
 }
