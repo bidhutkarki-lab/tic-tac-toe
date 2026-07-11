@@ -8,10 +8,12 @@ import com.bidhutkarki.tictactoe.user.dto.UserResponse;
 import com.bidhutkarki.tictactoe.user.entity.Profile;
 import com.bidhutkarki.tictactoe.user.repository.ProfileRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class UserService {
 
@@ -20,12 +22,14 @@ public class UserService {
 
     @Transactional
     public ProfileResponse register(RegisterRequest request) {
+        log.info("Registering user with username={}", request.username());
         UserResponse user = authClient.register(AuthRegisterRequest.from(request));
         Profile profile = profileRepository.save(new Profile(
                 user.id(),
                 request.username().trim(),
                 request.firstName().trim(),
                 request.lastName().trim()));
+        log.info("Registered user profileId={} authId={}", profile.getId(), profile.getAuthId());
         return ProfileResponse.from(profile);
     }
 }
