@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/games")
+@RequestMapping("/games")
 @RequiredArgsConstructor
 public class GameController {
 
@@ -30,7 +30,7 @@ public class GameController {
     public ResponseEntity<GameResponse> create(@Valid @RequestBody CreateGameRequest request) {
         GameResponse response = gameService.create(request);
         return ResponseEntity
-                .created(URI.create("/api/games/" + response.id()))
+                .created(URI.create("/games/" + response.id()))
                 .body(response);
     }
 

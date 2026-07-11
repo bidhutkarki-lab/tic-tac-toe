@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
 
@@ -23,7 +23,7 @@ public class UserController {
     public ResponseEntity<ProfileResponse> register(@Valid @RequestBody RegisterRequest request) {
         ProfileResponse response = userService.register(request);
         return ResponseEntity
-                .created(URI.create("/api/users/" + response.id()))
+                .created(URI.create("/users/" + response.id()))
                 .body(response);
     }
 }

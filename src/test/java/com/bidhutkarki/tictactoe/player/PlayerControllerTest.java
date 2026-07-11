@@ -22,7 +22,7 @@ class PlayerControllerTest {
 
     @Test
     void registersPlayerWithValidUsername() throws Exception {
-        mockMvc.perform(post("/api/players")
+        mockMvc.perform(post("/players")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"username\": \"alice\"}"))
                 .andExpect(status().isCreated())
@@ -32,12 +32,12 @@ class PlayerControllerTest {
 
     @Test
     void rejectsDuplicateUsername() throws Exception {
-        mockMvc.perform(post("/api/players")
+        mockMvc.perform(post("/players")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"username\": \"bob\"}"))
                 .andExpect(status().isCreated());
 
-        mockMvc.perform(post("/api/players")
+        mockMvc.perform(post("/players")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"username\": \"BOB\"}"))
                 .andExpect(status().isConflict());
@@ -45,7 +45,7 @@ class PlayerControllerTest {
 
     @Test
     void rejectsBlankUsername() throws Exception {
-        mockMvc.perform(post("/api/players")
+        mockMvc.perform(post("/players")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"username\": \"\"}"))
                 .andExpect(status().isBadRequest());
@@ -53,7 +53,7 @@ class PlayerControllerTest {
 
     @Test
     void rejectsTooShortUsername() throws Exception {
-        mockMvc.perform(post("/api/players")
+        mockMvc.perform(post("/players")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"username\": \"ab\"}"))
                 .andExpect(status().isBadRequest());
@@ -61,12 +61,12 @@ class PlayerControllerTest {
 
     @Test
     void listsRegisteredPlayers() throws Exception {
-        mockMvc.perform(post("/api/players")
+        mockMvc.perform(post("/players")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"username\": \"charlie\"}"))
                 .andExpect(status().isCreated());
 
-        mockMvc.perform(get("/api/players"))
+        mockMvc.perform(get("/players"))
                 .andExpect(status().isOk());
     }
 }

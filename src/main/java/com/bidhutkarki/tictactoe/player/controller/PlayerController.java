@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/players")
+@RequestMapping("/players")
 @RequiredArgsConstructor
 public class PlayerController {
 
@@ -25,7 +25,7 @@ public class PlayerController {
     public ResponseEntity<PlayerResponse> register(@Valid @RequestBody RegisterPlayerRequest request) {
         PlayerResponse response = playerService.register(request);
         return ResponseEntity
-                .created(URI.create("/api/players/" + response.id()))
+                .created(URI.create("/players/" + response.id()))
                 .body(response);
     }
 
