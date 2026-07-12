@@ -25,11 +25,11 @@ public class Game {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, updatable = false)
-    private Long playerXId;
+    @Column(nullable = false, updatable = false, length = 32)
+    private String playerXId;
 
-    @Column
-    private Long playerOId;
+    @Column(length = 32)
+    private String playerOId;
 
     @Column(nullable = false, length = 9)
     private String board;
@@ -44,14 +44,14 @@ public class Game {
     @Version
     private Long version;
 
-    public Game(Long playerXId) {
+    public Game(String playerXId) {
         this.playerXId = playerXId;
         this.board = Board.EMPTY;
         this.status = GameStatus.WAITING_FOR_OPPONENT;
         this.createdAt = Instant.now();
     }
 
-    public void join(Long playerOId) {
+    public void join(String playerOId) {
         transitionTo(GameStatus.READY);
         this.playerOId = playerOId;
     }

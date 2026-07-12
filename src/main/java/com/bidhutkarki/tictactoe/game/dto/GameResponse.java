@@ -6,8 +6,8 @@ import java.time.Instant;
 
 public record GameResponse(
         Long id,
-        Long playerXId,
-        Long playerOId,
+        String playerXId,
+        String playerOId,
         String board,
         GameStatus status,
         Instant createdAt) {

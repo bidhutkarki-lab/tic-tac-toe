@@ -96,7 +96,7 @@ public class GameService {
         return GameResponse.from(game);
     }
 
-    private char markFor(Game game, Long playerId) {
+    private char markFor(Game game, String playerId) {
         if (playerId.equals(game.getPlayerXId())) {
             return Board.MARK_X;
         }

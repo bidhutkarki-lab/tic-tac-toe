@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 
 public record MakeMoveRequest(
         @NotNull(message = "playerId is required")
-        Long playerId,
+        String playerId,
         @NotNull(message = "cell is required")
         @Min(value = 0, message = "cell must be between 0 and 8")
         @Max(value = 8, message = "cell must be between 0 and 8")
