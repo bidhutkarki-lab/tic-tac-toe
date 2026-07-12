@@ -2,12 +2,15 @@ package com.bidhutkarki.tictactoe.game.service;
 
 import com.bidhutkarki.tictactoe.game.dto.CreateGameRequest;
 import com.bidhutkarki.tictactoe.game.dto.GameResponse;
+import com.bidhutkarki.tictactoe.game.dto.JoinGameRequest;
 import com.bidhutkarki.tictactoe.game.dto.MakeMoveRequest;
+import com.bidhutkarki.tictactoe.game.dto.StartGameRequest;
 import com.bidhutkarki.tictactoe.game.dto.UpdateGameRequest;
 import com.bidhutkarki.tictactoe.game.entity.Board;
 import com.bidhutkarki.tictactoe.game.entity.Game;
 import com.bidhutkarki.tictactoe.game.entity.GameStatus;
 import com.bidhutkarki.tictactoe.game.exception.GameNotFoundException;
+import com.bidhutkarki.tictactoe.game.exception.InvalidGameStateException;
 import com.bidhutkarki.tictactoe.game.exception.InvalidMoveException;
 import com.bidhutkarki.tictactoe.game.repository.GameRepository;
 import java.util.List;
@@ -23,8 +26,33 @@ public class GameService {
 
     @Transactional
     public GameResponse create(CreateGameRequest request) {
-        Game saved = gameRepository.save(new Game(request.playerXId(), request.playerOId()));
+        Game saved = gameRepository.save(new Game(request.playerXId()));
         return GameResponse.from(saved);
+    }
+
+    @Transactional
+    public GameResponse join(Long id, JoinGameRequest request) {
+        Game game = gameRepository.findById(id)
+                .orElseThrow(() -> new GameNotFoundException(id));
+        if (request.playerId().equals(game.getPlayerXId())) {
+            throw new InvalidGameStateException(
+                    "player '" + request.playerId() + "' cannot join their own game");
+        }
+        game.join(request.playerId());
+        return GameResponse.from(game);
+    }
+
+    @Transactional
+    public GameResponse start(Long id, StartGameRequest request) {
+        Game game = gameRepository.findById(id)
+                .orElseThrow(() -> new GameNotFoundException(id));
+        if (!request.playerId().equals(game.getPlayerXId())
+                && !request.playerId().equals(game.getPlayerOId())) {
+            throw new InvalidGameStateException(
+                    "player '" + request.playerId() + "' is not part of game '" + id + "'");
+        }
+        game.start();
+        return GameResponse.from(game);
     }
 
     @Transactional(readOnly = true)
@@ -54,7 +82,7 @@ public class GameService {
         Game game = gameRepository.findById(id)
                 .orElseThrow(() -> new GameNotFoundException(id));
         if (game.getStatus() != GameStatus.IN_PROGRESS) {
-            throw new InvalidMoveException("game '" + id + "' is already finished");
+            throw new InvalidMoveException("game '" + id + "' is not in progress");
         }
         char mark = markFor(game, request.playerId());
         Board board = new Board(game.getBoard());

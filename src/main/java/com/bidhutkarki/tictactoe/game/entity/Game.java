@@ -1,5 +1,6 @@
 package com.bidhutkarki.tictactoe.game.entity;
 
+import com.bidhutkarki.tictactoe.game.exception.InvalidGameStateException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -27,7 +28,7 @@ public class Game {
     @Column(nullable = false, updatable = false)
     private Long playerXId;
 
-    @Column(nullable = false, updatable = false)
+    @Column
     private Long playerOId;
 
     @Column(nullable = false, length = 9)
@@ -43,16 +44,32 @@ public class Game {
     @Version
     private Long version;
 
-    public Game(Long playerXId, Long playerOId) {
+    public Game(Long playerXId) {
         this.playerXId = playerXId;
-        this.playerOId = playerOId;
         this.board = Board.EMPTY;
-        this.status = GameStatus.IN_PROGRESS;
+        this.status = GameStatus.WAITING_FOR_OPPONENT;
         this.createdAt = Instant.now();
     }
 
+    public void join(Long playerOId) {
+        transitionTo(GameStatus.READY);
+        this.playerOId = playerOId;
+    }
+
+    public void start() {
+        transitionTo(GameStatus.IN_PROGRESS);
+    }
+
     public void update(String board) {
+        transitionTo(new Board(board).status());
         this.board = board;
-        this.status = new Board(board).status();
+    }
+
+    private void transitionTo(GameStatus target) {
+        if (!status.canTransitionTo(target)) {
+            throw new InvalidGameStateException(
+                    "game '" + id + "' cannot transition from " + status + " to " + target);
+        }
+        this.status = target;
     }
 }

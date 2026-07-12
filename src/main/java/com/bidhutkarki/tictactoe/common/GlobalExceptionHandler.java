@@ -1,6 +1,7 @@
 package com.bidhutkarki.tictactoe.common;
 
 import com.bidhutkarki.tictactoe.game.exception.GameNotFoundException;
+import com.bidhutkarki.tictactoe.game.exception.InvalidGameStateException;
 import com.bidhutkarki.tictactoe.game.exception.InvalidMoveException;
 import com.bidhutkarki.tictactoe.player.exception.UsernameAlreadyExistsException;
 import com.bidhutkarki.tictactoe.user.exception.AuthServiceException;
@@ -31,6 +32,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(InvalidMoveException.class)
     public ResponseEntity<Map<String, Object>> handleInvalidMove(InvalidMoveException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(body(HttpStatus.CONFLICT, ex.getMessage()));
+    }
+
+    @ExceptionHandler(InvalidGameStateException.class)
+    public ResponseEntity<Map<String, Object>> handleInvalidGameState(InvalidGameStateException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(body(HttpStatus.CONFLICT, ex.getMessage()));
     }
 

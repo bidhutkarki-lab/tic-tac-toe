@@ -2,7 +2,9 @@ package com.bidhutkarki.tictactoe.game.controller;
 
 import com.bidhutkarki.tictactoe.game.dto.CreateGameRequest;
 import com.bidhutkarki.tictactoe.game.dto.GameResponse;
+import com.bidhutkarki.tictactoe.game.dto.JoinGameRequest;
 import com.bidhutkarki.tictactoe.game.dto.MakeMoveRequest;
+import com.bidhutkarki.tictactoe.game.dto.StartGameRequest;
 import com.bidhutkarki.tictactoe.game.dto.UpdateGameRequest;
 import com.bidhutkarki.tictactoe.game.service.GameService;
 import jakarta.validation.Valid;
@@ -42,6 +44,16 @@ public class GameController {
     @GetMapping("/{id}")
     public GameResponse getGame(@PathVariable Long id) {
         return gameService.findById(id);
+    }
+
+    @PostMapping("/{id}/join")
+    public GameResponse joinGame(@PathVariable Long id, @Valid @RequestBody JoinGameRequest request) {
+        return gameService.join(id, request);
+    }
+
+    @PostMapping("/{id}/start")
+    public GameResponse startGame(@PathVariable Long id, @Valid @RequestBody StartGameRequest request) {
+        return gameService.start(id, request);
     }
 
     @PutMapping("/{id}")
