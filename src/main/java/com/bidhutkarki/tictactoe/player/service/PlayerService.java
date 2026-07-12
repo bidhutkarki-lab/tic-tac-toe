@@ -22,7 +22,7 @@ public class PlayerService {
         if (playerRepository.existsByUsernameIgnoreCase(username)) {
             throw new UsernameAlreadyExistsException(username);
         }
-        Player saved = playerRepository.save(new Player(username));
+        Player saved = playerRepository.save(new Player(username, request.profileId()));
         return PlayerResponse.from(saved);
     }
 
