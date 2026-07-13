@@ -24,3 +24,6 @@ target/
 
 ### Mac ###
 .DS_Store
+
+### H2 file database ###
+data/

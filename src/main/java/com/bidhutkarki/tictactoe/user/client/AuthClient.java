@@ -7,6 +7,7 @@ import com.bidhutkarki.tictactoe.user.exception.AuthServiceUnavailableException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
@@ -16,17 +17,19 @@ import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClient;
 
 @Component
+@Slf4j
 @RequiredArgsConstructor
 public class AuthClient {
 
-    private static final String REGISTER_PATH = "/api/auth/register";
+    private static final String REGISTER_PATH = "/register";
 
     @Qualifier("authServiceRestClient")
     private final RestClient restClient;
 
     public UserResponse register(AuthRegisterRequest request) {
+        log.info("Sending POST {} to auth service email={}", REGISTER_PATH, request.email());
         try {
-            return restClient.post()
+            UserResponse response = restClient.post()
                     .uri(REGISTER_PATH)
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(request)
@@ -39,6 +42,9 @@ public class AuthClient {
                         throw new AuthServiceException(res.getStatusCode(), readBody(res));
                     })
                     .body(UserResponse.class);
+            log.info("Auth service registered email={} authId={}", request.email(),
+                    response != null ? response.id() : null);
+            return response;
         } catch (ResourceAccessException ex) {
             throw new AuthServiceUnavailableException("auth service is unreachable", ex);
         }

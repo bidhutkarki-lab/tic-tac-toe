@@ -6,6 +6,7 @@ import com.bidhutkarki.tictactoe.user.dto.ProfileResponse;
 import com.bidhutkarki.tictactoe.user.dto.RegisterRequest;
 import com.bidhutkarki.tictactoe.user.dto.UserResponse;
 import com.bidhutkarki.tictactoe.user.entity.Profile;
+import com.bidhutkarki.tictactoe.user.exception.ProfileNotFoundException;
 import com.bidhutkarki.tictactoe.user.repository.ProfileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +31,13 @@ public class UserService {
                 request.firstName().trim(),
                 request.lastName().trim()));
         log.info("Registered user profileId={} authId={}", profile.getId(), profile.getAuthId());
+        return ProfileResponse.from(profile);
+    }
+
+    @Transactional(readOnly = true)
+    public ProfileResponse getByAuthId(String authId) {
+        Profile profile = profileRepository.findByAuthId(authId)
+                .orElseThrow(() -> new ProfileNotFoundException("no profile for authId=" + authId));
         return ProfileResponse.from(profile);
     }
 }

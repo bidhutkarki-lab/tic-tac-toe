@@ -1,5 +1,7 @@
 package com.bidhutkarki.tictactoe.user.controller;
 
+import com.bidhutkarki.tictactoe.common.security.AuthPrincipal;
+import com.bidhutkarki.tictactoe.common.security.AuthUser;
 import com.bidhutkarki.tictactoe.user.dto.ProfileResponse;
 import com.bidhutkarki.tictactoe.user.dto.RegisterRequest;
 import com.bidhutkarki.tictactoe.user.service.UserService;
@@ -7,6 +9,7 @@ import jakarta.validation.Valid;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,5 +28,10 @@ public class UserController {
         return ResponseEntity
                 .created(URI.create("/users/" + response.id()))
                 .body(response);
+    }
+
+    @GetMapping("/me")
+    public ProfileResponse getCurrentUser(@AuthPrincipal AuthUser principal) {
+        return userService.getByAuthId(principal.authId());
     }
 }
