@@ -8,5 +8,9 @@ public interface PlayerRepository extends JpaRepository<Player, String> {
 
     boolean existsByUsernameIgnoreCase(String username);
 
+    boolean existsByAuthId(String authId);
+
+    Optional<Player> findByAuthId(String authId);
+
     Optional<Player> findByUsernameIgnoreCase(String username);
 }

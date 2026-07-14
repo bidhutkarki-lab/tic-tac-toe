@@ -21,7 +21,7 @@ public class Player {
     private String id;
 
     @Column(length = 32, unique = true)
-    private String profileId;
+    private String authId;
 
     @Column(nullable = false, unique = true)
     private String username;
@@ -33,9 +33,9 @@ public class Player {
         this(username, null);
     }
 
-    public Player(String username, String profileId) {
+    public Player(String username, String authId) {
         this.id = UuidGenerator.newId();
-        this.profileId = profileId;
+        this.authId = authId;
         this.username = username;
         this.createdAt = Instant.now();
     }

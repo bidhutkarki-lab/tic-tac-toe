@@ -1,5 +1,7 @@
 package com.bidhutkarki.tictactoe.player.controller;
 
+import com.bidhutkarki.tictactoe.common.security.AuthPrincipal;
+import com.bidhutkarki.tictactoe.common.security.AuthUser;
 import com.bidhutkarki.tictactoe.player.dto.PlayerResponse;
 import com.bidhutkarki.tictactoe.player.dto.RegisterPlayerRequest;
 import com.bidhutkarki.tictactoe.player.service.PlayerService;
@@ -22,11 +24,17 @@ public class PlayerController {
     private final PlayerService playerService;
 
     @PostMapping
-    public ResponseEntity<PlayerResponse> register(@Valid @RequestBody RegisterPlayerRequest request) {
-        PlayerResponse response = playerService.register(request);
+    public ResponseEntity<PlayerResponse> register(
+            @AuthPrincipal AuthUser principal, @Valid @RequestBody RegisterPlayerRequest request) {
+        PlayerResponse response = playerService.register(principal.authId(), request);
         return ResponseEntity
                 .created(URI.create("/players/" + response.id()))
                 .body(response);
+    }
+
+    @GetMapping("/me")
+    public PlayerResponse getCurrentPlayer(@AuthPrincipal AuthUser principal) {
+        return playerService.findByUserId(principal.authId());
     }
 
     @GetMapping

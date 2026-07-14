@@ -4,6 +4,8 @@ import com.bidhutkarki.tictactoe.common.security.UnauthorizedException;
 import com.bidhutkarki.tictactoe.game.exception.GameNotFoundException;
 import com.bidhutkarki.tictactoe.game.exception.InvalidGameStateException;
 import com.bidhutkarki.tictactoe.game.exception.InvalidMoveException;
+import com.bidhutkarki.tictactoe.player.exception.PlayerAlreadyRegisteredException;
+import com.bidhutkarki.tictactoe.player.exception.PlayerNotFoundException;
 import com.bidhutkarki.tictactoe.player.exception.UsernameAlreadyExistsException;
 import com.bidhutkarki.tictactoe.user.exception.AuthServiceException;
 import com.bidhutkarki.tictactoe.user.exception.AuthServiceUnavailableException;
@@ -25,6 +27,16 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UsernameAlreadyExistsException.class)
     public ResponseEntity<Map<String, Object>> handleUsernameTaken(UsernameAlreadyExistsException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(body(HttpStatus.CONFLICT, ex.getMessage()));
+    }
+
+    @ExceptionHandler(PlayerAlreadyRegisteredException.class)
+    public ResponseEntity<Map<String, Object>> handlePlayerAlreadyRegistered(PlayerAlreadyRegisteredException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(body(HttpStatus.CONFLICT, ex.getMessage()));
+    }
+
+    @ExceptionHandler(PlayerNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handlePlayerNotFound(PlayerNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body(HttpStatus.NOT_FOUND, ex.getMessage()));
     }
 
     @ExceptionHandler(GameNotFoundException.class)
