@@ -1,10 +1,11 @@
 package com.bidhutkarki.tictactoe.game.controller;
 
+import com.bidhutkarki.tictactoe.common.security.AuthPrincipal;
+import com.bidhutkarki.tictactoe.common.security.AuthUser;
 import com.bidhutkarki.tictactoe.game.dto.CreateGameRequest;
 import com.bidhutkarki.tictactoe.game.dto.GameResponse;
 import com.bidhutkarki.tictactoe.game.dto.JoinGameRequest;
 import com.bidhutkarki.tictactoe.game.dto.MakeMoveRequest;
-import com.bidhutkarki.tictactoe.game.dto.StartGameRequest;
 import com.bidhutkarki.tictactoe.game.dto.UpdateGameRequest;
 import com.bidhutkarki.tictactoe.game.service.GameService;
 import jakarta.validation.Valid;
@@ -52,8 +53,8 @@ public class GameController {
     }
 
     @PostMapping("/{id}/start")
-    public GameResponse startGame(@PathVariable Long id, @Valid @RequestBody StartGameRequest request) {
-        return gameService.start(id, request);
+    public GameResponse startGame(@PathVariable Long id, @AuthPrincipal AuthUser principal) {
+        return gameService.start(id, principal.authId());
     }
 
     @PutMapping("/{id}")
@@ -62,8 +63,9 @@ public class GameController {
     }
 
     @PostMapping("/{id}/moves")
-    public GameResponse makeMove(@PathVariable Long id, @Valid @RequestBody MakeMoveRequest request) {
-        return gameService.makeMove(id, request);
+    public GameResponse makeMove(
+            @PathVariable Long id, @AuthPrincipal AuthUser principal, @Valid @RequestBody MakeMoveRequest request) {
+        return gameService.makeMove(id, principal.authId(), request);
     }
 
     @DeleteMapping("/{id}")
