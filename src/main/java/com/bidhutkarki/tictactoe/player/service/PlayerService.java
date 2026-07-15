@@ -43,6 +43,13 @@ public class PlayerService {
     }
 
     @Transactional(readOnly = true)
+    public PlayerResponse findById(String id) {
+        return playerRepository.findById(id)
+                .map(PlayerResponse::from)
+                .orElseThrow(() -> new PlayerNotFoundException("no player found with id '" + id + "'"));
+    }
+
+    @Transactional(readOnly = true)
     public PlayerResponse findByUserId(String authId) {
         log.info("Looking up player for authId={}", authId);
         return playerRepository.findByAuthId(authId)
