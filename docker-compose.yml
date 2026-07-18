@@ -7,4 +7,15 @@ services:
       - "8080:8080"
     environment:
       - SPRING_PROFILES_ACTIVE=default
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - redis
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: tic-tac-toe-redis
+    ports:
+      - "6379:6379"
     restart: unless-stopped

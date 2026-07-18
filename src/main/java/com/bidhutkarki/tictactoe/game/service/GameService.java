@@ -8,6 +8,8 @@ import com.bidhutkarki.tictactoe.game.dto.UpdateGameRequest;
 import com.bidhutkarki.tictactoe.game.entity.Board;
 import com.bidhutkarki.tictactoe.game.entity.Game;
 import com.bidhutkarki.tictactoe.game.entity.GameStatus;
+import com.bidhutkarki.tictactoe.game.event.GameEvent;
+import com.bidhutkarki.tictactoe.game.event.GameEventPublisher;
 import com.bidhutkarki.tictactoe.game.exception.GameNotFoundException;
 import com.bidhutkarki.tictactoe.game.exception.InvalidGameStateException;
 import com.bidhutkarki.tictactoe.game.exception.InvalidMoveException;
@@ -26,6 +28,7 @@ public class GameService {
 
     private final GameRepository gameRepository;
     private final PlayerRepository playerRepository;
+    private final GameEventPublisher gameEventPublisher;
 
     @Transactional
     public GameResponse create(CreateGameRequest request) {
@@ -102,7 +105,9 @@ public class GameService {
             throw new InvalidMoveException("cell " + request.cell() + " is already taken");
         }
         game.update(board.withMark(request.cell(), mark));
-        return GameResponse.from(game);
+        GameResponse response = GameResponse.from(game);
+        gameEventPublisher.publish(new GameEvent(id, response));
+        return response;
     }
 
     private char markFor(Game game, String playerId) {

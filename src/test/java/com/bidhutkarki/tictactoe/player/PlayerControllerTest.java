@@ -23,6 +23,7 @@ class PlayerControllerTest {
     @Test
     void registersPlayerWithValidUsername() throws Exception {
         mockMvc.perform(post("/players")
+                        .header("X-User-Id", "auth-alice")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"username\": \"alice\"}"))
                 .andExpect(status().isCreated())
@@ -33,11 +34,13 @@ class PlayerControllerTest {
     @Test
     void rejectsDuplicateUsername() throws Exception {
         mockMvc.perform(post("/players")
+                        .header("X-User-Id", "auth-bob")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"username\": \"bob\"}"))
                 .andExpect(status().isCreated());
 
         mockMvc.perform(post("/players")
+                        .header("X-User-Id", "auth-bob-2")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"username\": \"BOB\"}"))
                 .andExpect(status().isConflict());
@@ -46,6 +49,7 @@ class PlayerControllerTest {
     @Test
     void rejectsBlankUsername() throws Exception {
         mockMvc.perform(post("/players")
+                        .header("X-User-Id", "auth-blank")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"username\": \"\"}"))
                 .andExpect(status().isBadRequest());
@@ -54,6 +58,7 @@ class PlayerControllerTest {
     @Test
     void rejectsTooShortUsername() throws Exception {
         mockMvc.perform(post("/players")
+                        .header("X-User-Id", "auth-short")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"username\": \"ab\"}"))
                 .andExpect(status().isBadRequest());
@@ -62,6 +67,7 @@ class PlayerControllerTest {
     @Test
     void listsRegisteredPlayers() throws Exception {
         mockMvc.perform(post("/players")
+                        .header("X-User-Id", "auth-charlie")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"username\": \"charlie\"}"))
                 .andExpect(status().isCreated());

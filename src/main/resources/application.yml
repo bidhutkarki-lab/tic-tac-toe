@@ -17,6 +17,11 @@ spring:
       hibernate:
         format_sql: true
 
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+
   # H2 web console at http://localhost:8080/h2-console
   h2:
     console:
