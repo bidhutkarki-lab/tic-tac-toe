@@ -17,6 +17,7 @@ import com.bidhutkarki.tictactoe.game.repository.GameRepository;
 import com.bidhutkarki.tictactoe.player.entity.Player;
 import com.bidhutkarki.tictactoe.player.exception.PlayerNotFoundException;
 import com.bidhutkarki.tictactoe.player.repository.PlayerRepository;
+import com.bidhutkarki.tictactoe.result.GameResultService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,7 @@ public class GameService {
     private final GameRepository gameRepository;
     private final PlayerRepository playerRepository;
     private final GameEventPublisher gameEventPublisher;
+    private final GameResultService gameResultService;
 
     @Transactional
     public GameResponse create(CreateGameRequest request) {
@@ -105,6 +107,9 @@ public class GameService {
             throw new InvalidMoveException("cell " + request.cell() + " is already taken");
         }
         game.update(board.withMark(request.cell(), mark));
+        if (game.getStatus().isTerminal()) {
+            gameResultService.recordResult(game);
+        }
         GameResponse response = GameResponse.from(game);
         gameEventPublisher.publish(new GameEvent(id, response));
         return response;
