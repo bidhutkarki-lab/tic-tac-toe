@@ -8,4 +8,6 @@ public interface GameResultRepository extends JpaRepository<GameResult, Long> {
     List<GameResult> findByPlayerIdOrderByCreatedAtDesc(String playerId);
 
     List<GameResult> findByGameId(Long gameId);
+
+    List<GameResult> findAllByOrderByIdAsc();
 }
