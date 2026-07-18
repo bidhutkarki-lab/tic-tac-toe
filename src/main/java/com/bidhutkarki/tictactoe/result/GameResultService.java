@@ -5,14 +5,18 @@ import com.bidhutkarki.tictactoe.game.entity.GameStatus;
 import com.bidhutkarki.tictactoe.result.dto.GameResultResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class GameResultService {
 
     private final GameResultRepository gameResultRepository;
+    private final ObjectProvider<RedisLeaderboard> redisLeaderboard;
 
     /**
      * Writes an audit row per player for a finished game. Must be called within
@@ -20,10 +24,20 @@ public class GameResultService {
      */
     public void recordResult(Game game) {
         GameStatus status = game.getStatus();
-        gameResultRepository.save(
-                new GameResult(game.getId(), game.getPlayerXId(), outcomeForX(status)));
-        gameResultRepository.save(
-                new GameResult(game.getId(), game.getPlayerOId(), outcomeForO(status)));
+        Outcome outcomeX = outcomeForX(status);
+        Outcome outcomeO = outcomeForO(status);
+        gameResultRepository.save(new GameResult(game.getId(), game.getPlayerXId(), outcomeX));
+        gameResultRepository.save(new GameResult(game.getId(), game.getPlayerOId(), outcomeO));
+
+        RedisLeaderboard redis = redisLeaderboard.getIfAvailable();
+        if (redis != null) {
+            try {
+                redis.recordGame(game.getPlayerXId(), outcomeX, game.getPlayerOId(), outcomeO);
+            } catch (RuntimeException e) {
+                log.warn("Failed to update Redis leaderboard for game {}; "
+                        + "cache will be corrected on next rebuild", game.getId(), e);
+            }
+        }
     }
 
     @Transactional(readOnly = true)

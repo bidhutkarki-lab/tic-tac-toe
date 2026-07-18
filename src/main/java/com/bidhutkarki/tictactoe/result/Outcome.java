@@ -14,4 +14,15 @@ public enum Outcome {
     public int points() {
         return points;
     }
+
+    /**
+     * The Elo "actual score" for this outcome: win 1.0, draw 0.5, loss 0.0.
+     */
+    public double actualScore() {
+        return switch (this) {
+            case WIN -> 1.0;
+            case DRAW -> 0.5;
+            case LOSS -> 0.0;
+        };
+    }
 }
